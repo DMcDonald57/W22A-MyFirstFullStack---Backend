@@ -27,6 +27,27 @@ def add_Candy():
     else: 
         return "There was an error"
 
+# this patch works but message is wierd
+@app.patch('/api/candy')
+def update_Candy():
+    id = request.json.get('id')
+    name = request.json.get('name')
+    result = run_statement('CALL update_Candy (?,?)',[id,name])
+    for name in result:
+        return "Candy name updated: {}".format(name)
+    else:
+        return "Name was not updated."
+
+# this delete works but again messages do not
+@app.delete('/api/candy')
+def delete_Candy():
+    id = request.json.get('id')
+    result = run_statement('CALL delete_Candy (?)', [id])
+    if result == None:
+        return "Candy deleted"
+    else:
+        return "Candy was not deleted"
+
 
 
 
