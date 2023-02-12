@@ -1,5 +1,4 @@
 from flask import Flask, request, make_response, jsonify
-# import json
 from dbhelpers import run_statement
 
 
@@ -17,36 +16,33 @@ def list_Candy():
     else:
         return make_response(jsonify(result), 500)
 
-# post works as it adds to DB but message is wrong
 @app.post('/api/candy')
 def add_Candy():
     name = request.json.get('name')
     result = run_statement('CALL add_Candy (?)',[name])
     if result == None:
-        return "Success"
+        return make_response(jsonify("Candy added: {}".format(name)), 200)
     else: 
-        return "There was an error"
+        return make_response(jsonify("Something went wrong"), 500)
 
-# this patch works but message is wierd
 @app.patch('/api/candy')
 def update_Candy():
     id = request.json.get('id')
     name = request.json.get('name')
     result = run_statement('CALL update_Candy (?,?)',[id,name])
-    for name in result:
-        return "Candy name updated: {}".format(name)
+    if result == None:
+        return make_response(jsonify("Candy name updated: {}".format(name)), 200)
     else:
-        return "Name was not updated."
+        return make_response(jsonify("Something went wrong"), 500)
 
-# this delete works but again messages do not
 @app.delete('/api/candy')
 def delete_Candy():
     id = request.json.get('id')
     result = run_statement('CALL delete_Candy (?)', [id])
     if result == None:
-        return "Candy deleted"
+        return make_response(jsonify("Candy deleted"), 200)
     else:
-        return "Candy was not deleted"
+        return make_response(jsonify("Something went wrong"), 500)
 
 
 
